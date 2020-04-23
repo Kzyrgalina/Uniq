@@ -45,7 +45,7 @@ public class Uniq {
      * @param list список считанных строк из которого удаляем повторяющиеся
      * @param ignore количество игнорируемых символов [-s Num]
      * @param ignoreCase [-i]
-     * @return список полнотью уникальных строк
+     * @return список уникальных строк
      */
     // метод исключительно для флага [-u] (принцип работы аналогичен unionStrings())
     public ArrayList<String> intersectsStrings(ArrayList<String> list, int ignore, boolean ignoreCase) {

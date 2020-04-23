@@ -16,6 +16,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
@@ -38,14 +39,15 @@ public class Main {
     private String fileName = "";
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws CmdLineException, IOException {
         new Main().launch(args);
     }
 
-    private void launch(String[] args) {
+    private void launch(String[] args) throws CmdLineException, IOException {
         CmdLineParser parser = new CmdLineParser(this);
-        try {
+        {
             parser.parseArgument(args);
+
             //инициализация
             InputOutputWorker inputOutputWorker = new InputOutputWorker();
             Uniq uniq = new Uniq();
@@ -53,7 +55,7 @@ public class Main {
             //ввод данных
             ArrayList<String> inputList;
             if (!fileName.equals("")) {
-                inputList = InputOutputWorker.getStringFromFile(fileName);
+                inputList = inputOutputWorker.getStringFromFile(fileName);
             } else {
                 inputList = inputOutputWorker.getStringFromConsole();
             }
@@ -66,20 +68,15 @@ public class Main {
                 outputList = uniq.unionStrings(inputList, sN, i, c);
             }
 
-
             //вывод данных
             if (!outFileName.equals("")) {
                 inputOutputWorker.writeListToFile(outFileName, outputList);
             } else {
                 inputOutputWorker.writeListToConsole(outputList);
             }
-        } catch (CmdLineException e) {
-            System.err.println(e.getMessage());
-
-            parser.printUsage(System.err);
         }
-    }
 
+    }
 
 
 }
