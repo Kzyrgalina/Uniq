@@ -1,14 +1,27 @@
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Uniq {
-    /**
-     * @param inputList  список считанных строк
-     * @param ignore     количество игнорируемых символов [-s Num]
-     * @param ignoreCase [-i]
-     * @param countFlag  [-c]
-     * @return список уникальных строк с учетом всех установленных флагов, кроме [-u]
-     */
-    public ArrayList<String> unionStrings(ArrayList<String> inputList, int ignore, boolean ignoreCase, boolean countFlag) { // ignore = num
+
+    InputStream inputStream;
+    OutputStream outputStream;
+
+    public Uniq() {
+        inputStream = System.in;
+        outputStream = System.out;
+    }
+
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
+
+    public void setOutputStream(OutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
+    public void unionStrings(int ignore, boolean ignoreCase, boolean countFlag) throws IOException { // ignore = num
+        ArrayList<String> inputList = getStrings();
         ArrayList<String> outList = new ArrayList<>();
         String t = inputList.get(0);    // t = строка с которой мы сравниваем.
         int count = 0; //флаг подсчета количества строк
@@ -38,17 +51,11 @@ public class Uniq {
         count++;
         outList.add(countFlag ? count + " " + t : t);
 
-        return outList;
+        writeStrings(outList);
     }
 
-    /**
-     * @param list список считанных строк из которого удаляем повторяющиеся
-     * @param ignore количество игнорируемых символов [-s Num]
-     * @param ignoreCase [-i]
-     * @return список уникальных строк
-     */
-    // метод исключительно для флага [-u] (принцип работы аналогичен unionStrings())
-    public ArrayList<String> intersectsStrings(ArrayList<String> list, int ignore, boolean ignoreCase) {
+    public void intersectsStrings(int ignore, boolean ignoreCase) throws IOException {
+        ArrayList<String> list = getStrings();
         ArrayList<String> delete = new ArrayList<>();
         for (int i = 0; i < list.size() - 1; i++) {
             for (int d = i + 1; d < list.size(); d++) {
@@ -67,12 +74,32 @@ public class Uniq {
                 }
             }
         }
-        for (String str: delete) {
+        for (String str : delete) {
             list.remove(str);
         }
-        return list;
-        }
+        writeStrings(list);
     }
+
+    public ArrayList<String> getStrings() {
+        ArrayList<String> outList = new ArrayList<>();
+        Scanner scanner = new Scanner(inputStream);
+        String s;
+        while (scanner.hasNextLine() && !(s = scanner.nextLine()).isEmpty()) {
+            outList.add(s);
+        }
+        return outList;
+    }
+
+
+    public void writeStrings(ArrayList<String> strings) throws IOException {
+        OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream);
+        for (String value : strings) {
+            streamWriter.write(value + "\n");
+        }
+        streamWriter.flush();
+        streamWriter.close();
+    }
+}
 
 
 

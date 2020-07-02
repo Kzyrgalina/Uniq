@@ -16,6 +16,9 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -39,8 +42,35 @@ public class Main {
     private String fileName = "";
 
 
+    public static Main main1;
+
     public static void main(String[] args) throws CmdLineException, IOException {
-        new Main().launch(args);
+        main1 = new Main();
+        main1.launch(args);
+    }
+
+    public boolean isI() {
+        return main1.i;
+    }
+
+    public String getOutFileName() {
+        return main1.outFileName;
+    }
+
+    public int getsN() {
+        return main1.sN;
+    }
+
+    public boolean isC() {
+        return main1.c;
+    }
+
+    public String getFileName() {
+        return main1.fileName;
+    }
+
+    public boolean isU() {
+        return main1.u;
     }
 
     private void launch(String[] args) throws CmdLineException, IOException {
@@ -49,34 +79,30 @@ public class Main {
             parser.parseArgument(args);
 
             //инициализация
-            InputOutputWorker inputOutputWorker = new InputOutputWorker();
+            //InputOutputWorker inputOutputWorker = new InputOutputWorker();
             Uniq uniq = new Uniq();
 
             //ввод данных
             ArrayList<String> inputList;
             if (!fileName.equals("")) {
-                inputList = inputOutputWorker.getStringFromFile(fileName);
-            } else {
-                inputList = inputOutputWorker.getStringFromConsole();
+                FileInputStream fileInputStream = new FileInputStream(new File(fileName));
+//                inputList = inputOutputWorker.getStringFromFile(fileName);
+                uniq.setInputStream(fileInputStream);
+            }
+
+            //вывод данных
+            if (!outFileName.equals("")) {
+                FileOutputStream fileOutputStream = new FileOutputStream(new File(outFileName));
+                uniq.setOutputStream(fileOutputStream);
             }
 
             //работа программы, соблюдая все флаги
             ArrayList<String> outputList;
             if(u){
-                outputList = uniq.intersectsStrings(inputList, sN, i);
+                uniq.intersectsStrings(sN, i);
             }else{
-                outputList = uniq.unionStrings(inputList, sN, i, c);
-            }
-
-            //вывод данных
-            if (!outFileName.equals("")) {
-                inputOutputWorker.writeListToFile(outFileName, outputList);
-            } else {
-                inputOutputWorker.writeListToConsole(outputList);
+                uniq.unionStrings(sN, i, c);
             }
         }
-
     }
-
-
 }
